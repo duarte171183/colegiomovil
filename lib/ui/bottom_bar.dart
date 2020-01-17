@@ -5,8 +5,6 @@
 
  final  String _apiUrl = "http://192.168.1.71:3000/guides";
 
- List _GuidesLists;
-
 class BottomBar extends StatefulWidget{
   @override
     _BottomBarState createState () => _BottomBarState();
@@ -72,6 +70,24 @@ class BottomBar extends StatefulWidget{
   }
 
   class _HomeState extends State<Home> {
+
+  Future<List<Guide>> _getGuides() async {
+    
+    var data = await http.get(_apiUrl);
+
+    var jsonData = json.decode(data.body);
+
+    List<Guide> guides = [];
+
+    for(var g in jsonData){
+      Guide guide = Guide(g["email"],g["name"]);
+      guides.add(guide);
+    }
+
+    print(guides.length);
+    return guides;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -79,6 +95,31 @@ class BottomBar extends StatefulWidget{
         fit: StackFit.expand,
         children: <Widget>[
           Image.asset("./images/background.jpg", fit: BoxFit.cover),
+          Scaffold(
+            body: Container(
+             child: FutureBuilder(
+               future: _getGuides(),
+               builder: (BuildContext context, AsyncSnapshot snapshot){
+                 if(snapshot.data == null){
+                   return Container(
+                     child: Text("Loading..."),
+                   );
+                 }
+                 else{
+                   return ListView.builder(
+                     itemCount: snapshot.data.length,
+                     itemBuilder: (BuildContext context, int index){
+                     return ListTile(
+                       title: Text(snapshot.data[index].name),
+                     );
+                   },
+                   );
+                }
+              }
+             ), 
+            )
+          )
+          
         ],
       ),
     );
@@ -100,7 +141,8 @@ class BottomBar extends StatefulWidget{
     }
   }
 
-  Future<List>fetchData(String  apiUrl) async {
-    http.Response response = await http.get(apiUrl);
-    return (json.decode(response.body)['Guides']);
-  }
+ class Guide {
+   final String email;
+   final String name;
+   Guide(this.email, this.name);
+ }
