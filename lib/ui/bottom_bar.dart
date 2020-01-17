@@ -1,4 +1,11 @@
  import 'package:flutter/material.dart';
+ import 'dart:async';
+ import 'dart:convert';
+ import 'package:http/http.dart' as http;
+
+ final  String _apiUrl = "http://192.168.1.71:3000/guides";
+
+ List _GuidesLists;
 
 class BottomBar extends StatefulWidget{
   @override
@@ -23,7 +30,7 @@ class BottomBar extends StatefulWidget{
     
     @override
     Widget build(BuildContext context)  {
-      
+           
       return Scaffold(
         appBar: AppBar(
           title: Text("Guias Turisticos", 
@@ -59,11 +66,24 @@ class BottomBar extends StatefulWidget{
   }
 
 
-  class Home extends StatelessWidget {
+  class Home extends StatefulWidget {
     @override
-    Widget build (BuildContext context){
-      return Text("home");
-    }
+    _HomeState createState() => _HomeState();
+  }
+
+  class _HomeState extends State<Home> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Image.asset("./images/background.jpg", fit: BoxFit.cover),
+        ],
+      ),
+    );
+  }
+
   }
 
   class Buscar extends StatelessWidget {
@@ -78,4 +98,9 @@ class BottomBar extends StatefulWidget{
     Widget build (BuildContext context){
       return Text("Chats");
     }
+  }
+
+  Future<List>fetchData(String  apiUrl) async {
+    http.Response response = await http.get(apiUrl);
+    return (json.decode(response.body)['Guides']);
   }

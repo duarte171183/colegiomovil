@@ -1,3 +1,4 @@
+import 'package:colegio/ui/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './ui/create_profile.dart';
@@ -53,22 +54,25 @@ class HomeScreen extends StatelessWidget{
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     
-                    OutlineButton(
-                      child: Text ("Inicia Sesion", style: TextStyle(color: Colors.white60, fontSize: 20.0),),
+                    RaisedButton(
+                      child: Text ("Inicia Sesion", 
+                      style: TextStyle(color: Colors.white, fontSize: 20.0),),
                       padding: const EdgeInsets.all(5.0),
+                      color: Colors.black87,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                      highlightedBorderColor: Colors.blue,
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => CreateProfile()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
                       }
                     ),
 
-                    OutlineButton(
-                      child: Text ("Registrate", style: TextStyle(color: Colors.white60, fontSize: 20.0),),
+                    RaisedButton(
+                      child: Text ("Registrate", style: TextStyle(color: Colors.white, fontSize: 20.0),),
                       padding: const EdgeInsets.all(5.0),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                      highlightedBorderColor: Colors.blue,
-                      onPressed: () => debugPrint("Registrate pressed"),
+                       color: Colors.black87,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => CreateProfile()));
+                      }
                     )
                   ],
                 ),
