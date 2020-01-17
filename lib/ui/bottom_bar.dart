@@ -1,7 +1,9 @@
+ import 'dart:convert';
+ import 'package:cached_network_image/cached_network_image.dart';
+import 'package:http/http.dart' as http;
  import 'package:flutter/material.dart';
  import 'dart:async';
- import 'dart:convert';
- import 'package:http/http.dart' as http;
+ 
 
  final  String _apiUrl = "http://192.168.1.71:3000/guides";
 
@@ -31,7 +33,7 @@ class BottomBar extends StatefulWidget{
            
       return Scaffold(
         appBar: AppBar(
-          title: Text("Guias Turisticos", 
+          title: Text("Necesito un Guia", 
           style: TextStyle(fontSize: 30.0),
           ),
         ),
@@ -80,7 +82,7 @@ class BottomBar extends StatefulWidget{
     List<Guide> guides = [];
 
     for(var g in jsonData){
-      Guide guide = Guide(g["email"],g["name"]);
+      Guide guide = Guide(g["email"],g["name"], g["detail"]["picture"]["url"]);
       guides.add(guide);
     }
 
@@ -96,22 +98,39 @@ class BottomBar extends StatefulWidget{
         children: <Widget>[
           Image.asset("./images/background.jpg", fit: BoxFit.cover),
           Scaffold(
-            body: Container(
+            backgroundColor: Colors.transparent,
+            body: Center(
              child: FutureBuilder(
                future: _getGuides(),
                builder: (BuildContext context, AsyncSnapshot snapshot){
                  if(snapshot.data == null){
                    return Container(
                      child: Text("Loading..."),
+                     color: Colors.white,
                    );
                  }
                  else{
                    return ListView.builder(
+                     padding: const EdgeInsets.all(12.0),
                      itemCount: snapshot.data.length,
                      itemBuilder: (BuildContext context, int index){
-                     return ListTile(
-                       title: Text(snapshot.data[index].name),
-                     );
+                     return 
+                       Card(
+                         child: Column(
+                           mainAxisSize: MainAxisSize.min,
+                           children: <Widget>[
+                             ListTile(
+                               leading: CircleAvatar(
+                                 backgroundImage: NetworkImage(
+                                   "http://192.168.1.71:3000"+snapshot.data[index].url,
+                                 ),
+                              ),
+                              title: Text(snapshot.data[index].name),
+                              subtitle: Text(snapshot.data[index].email),
+                             )
+                           ],
+                         ),
+                      );
                    },
                    );
                 }
@@ -142,7 +161,19 @@ class BottomBar extends StatefulWidget{
   }
 
  class Guide {
-   final String email;
-   final String name;
-   Guide(this.email, this.name);
+  final  String email;
+  final String name;
+  final String url;
+  Guide(this.email, this.name, this.url);
+ }
+
+ class Detail{
+   final List<Picture> picture;
+   final String about;
+   Detail(this.picture, this.about);
+ }
+
+ class Picture{
+   final String url;
+   Picture(this.url);
  }
