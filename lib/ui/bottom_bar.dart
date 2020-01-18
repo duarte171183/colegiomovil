@@ -82,7 +82,7 @@ class BottomBar extends StatefulWidget{
     List<Guide> guides = [];
 
     for(var g in jsonData){
-      Guide guide = Guide(g["email"],g["name"], g["detail"]["picture"]["url"]);
+      Guide guide = Guide(g["email"],g["name"], g["detail"]["picture"]["url"], g["detail"]["about"] );
       guides.add(guide);
     }
 
@@ -116,20 +116,25 @@ class BottomBar extends StatefulWidget{
                      itemBuilder: (BuildContext context, int index){
                      return 
                        Card(
+                         shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
                          child: Column(
                            mainAxisSize: MainAxisSize.min,
                            children: <Widget>[
                              ListTile(
-                               leading: CircleAvatar(
-                                 backgroundImage: NetworkImage(
-                                   "http://192.168.1.71:3000"+snapshot.data[index].url,
-                                 ),
+                               leading: CachedNetworkImage(
+                                imageUrl:  "http://192.168.1.71:3000"+snapshot.data[index].url,
+                                placeholder: (context, url) => CircularProgressIndicator(),
+                                errorWidget: (context, url, error) => Icon(Icons.error),
                               ),
                               title: Text(snapshot.data[index].name),
-                              subtitle: Text(snapshot.data[index].email),
+                              subtitle: Text(snapshot.data[index].about),
                              )
                            ],
+                           
                          ),
+                         
                       );
                    },
                    );
@@ -164,7 +169,8 @@ class BottomBar extends StatefulWidget{
   final  String email;
   final String name;
   final String url;
-  Guide(this.email, this.name, this.url);
+  final String about;
+  Guide(this.email, this.name, this.url, this.about);
  }
 
  class Detail{
